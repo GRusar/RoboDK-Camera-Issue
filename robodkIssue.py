@@ -1,64 +1,30 @@
 import os
-from signal import pause
 import numpy as np
 from robodk.robolink import *      # RoboDK's API
 from robodk.robomath import *      # Math toolbox for robots
-from tempfile import TemporaryDirectory
 import open3d as o3d
-
-SHOT = True
-VISUALISE_MESH = True
 
 RDK = Robolink()
 
 SCRIPT_PATH = os.path.dirname(__file__)
 BRICK_PATH = SCRIPT_PATH + '/brick.stl'
 
-cameraFrame = RDK.AddFrame('Camera Frame')
-cameraFrame.setPose(Fanuc_2_Pose([1500, 0, 100, 0, -180, -90]))
-cameraFrameX = RDK.AddFrame('Camera Frame X')
-cameraFrameX.setPose(Fanuc_2_Pose([1350, 550, 100, 0, -180, -90]))
-
-camera_frames = cameraFrameX
-
 brick = RDK.AddFile(BRICK_PATH)
 brick.setName('brick')
 brick.setPose(Fanuc_2_Pose([1500, 0, -1210, 0, 0, 0]))
 brick.Scale([1000, 1000, 1000])
 
-# cam_item = RDK.Cam2D_Add(cameraFrame, 'FOCAL_LENGTH=6 FOV=30 FAR_LENGTH=5000 SIZE=960x540')
-# # cam_item = RDK.Cam2D_Add(cameraFrame, 'FOCAL_LENGTH=6 FOV=30 FAR_LENGTH=5000 SIZE=960x540')
-# print("ADDED pause 5")
-# pause(5)
+cameraFrame = RDK.AddFrame('Camera Frame')
+cameraFrame.setPose(Fanuc_2_Pose([1500, 0, 100, 0, -180, -90]))
+cameraFrameX = RDK.AddFrame('Camera Frame X')
+cameraFrameX.setPose(Fanuc_2_Pose([1350, 550, 100, 0, -180, -90]))
 
-# RDK.Cam2D_Snapshot(SCRIPT_PATH + '/image.png',cam_item, 'DEPTH')
-# print("Snapshoted path pause 5")
-# pause(5)
-# bytes_img = RDK.Cam2D_Snapshot("", cam_item, 'DEPTH')
-# print("Snapshoted socket pause 5")
-# pause(5)
-# print("1")
-# # Image size from file
-# from PIL import Image
-# im = Image.open(SCRIPT_PATH + '/image.png')
-# width, height = im.size
-# print("From file: ", width, height)
+# Use one of this frames:
+camera_frames = cameraFrameX
+# camera_frames = cameraFrame
 
-# # Image size from socket
-# depth32_socket = None
-# depth32_socket = np.frombuffer(bytes_img, dtype='>u4')
-# w, h = depth32_socket[:2]
-# print("From Socket: ", w, h)
-# print("2")
-# cam_item.Delete()
-# cam_item = RDK.Cam2D_Add(cameraFrame, 'FOCAL_LENGTH=6 FOV=30 FAR_LENGTH=5000 SIZE=960x540 DOCKED')
-# pause(5)
-# cam_item.setName('Lidar')
-# RDK.Cam2D_Snapshot(SCRIPT_PATH + '/depth_image.png',cam_item, 'DEPTH')
-# im = Image.open(SCRIPT_PATH + '/depth_image.png')
-# width, height = im.size
-# print("From depth file: ", width, height)
-
+SHOT = True
+VISUALISE_MESH = True
 
 if SHOT :
         #----------------------------------
@@ -75,7 +41,7 @@ if SHOT :
         cam_item = RDK.Item('Lidar', ITEM_TYPE_CAMERA)
         if not cam_item.Valid():
             print("Lidar simulator camera not found, try to add")
-            cam_item = RDK.Cam2D_Add(camera_frames, 'FOCAL_LENGTH=6 FOV=30 FAR_LENGTH=5000 SIZE=960x540 DEPTH')
+            cam_item = RDK.Cam2D_Add(camera_frames, 'FOCAL_LENGTH=6 FOV=30 FAR_LENGTH=5000 SIZE=960x540')
             cam_item.setName('Lidar')
             print("Lidar simulator camera added")
         cam_item.setParam('Open', 1)
@@ -114,6 +80,7 @@ if SHOT :
         depth32_socket = None
         bytes_img = RDK.Cam2D_Snapshot("", cam_item, 'DEPTH')
 
+        #Close camera window, after shot
         RDK.Cam2D_Close()
 
         if isinstance(bytes_img, bytes) and bytes_img != b'':
