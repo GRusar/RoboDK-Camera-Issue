@@ -9,15 +9,22 @@ RDK = Robolink()
 SCRIPT_PATH = os.path.dirname(__file__)
 BRICK_PATH = SCRIPT_PATH + '/brick.stl'
 
-brick = RDK.AddFile(BRICK_PATH)
-brick.setName('brick')
-brick.setPose(Fanuc_2_Pose([1500, 0, -1210, 0, 0, 0]))
-brick.Scale([1000, 1000, 1000])
+brick = RDK.Item('brick')
+if not brick.Valid():
+    brick = RDK.AddFile(BRICK_PATH)
+    brick.setName('brick')
+    brick.setPose(Fanuc_2_Pose([1500, 0, -1210, 0, 0, 0]))
+    brick.Scale([1000, 1000, 1000])
 
-cameraFrame = RDK.AddFrame('Camera Frame')
-cameraFrame.setPose(Fanuc_2_Pose([1500, 0, 100, 0, -180, -90]))
-cameraFrameX = RDK.AddFrame('Camera Frame X')
-cameraFrameX.setPose(Fanuc_2_Pose([1350, 550, 100, 0, -180, -90]))
+cameraFrame = RDK.Item('Camera Frame')
+if not cameraFrame.Valid():
+    cameraFrame = RDK.AddFrame('Camera Frame')
+    cameraFrame.setPose(Fanuc_2_Pose([1500, 0, 100, 0, -180, -90]))
+
+cameraFrameX = RDK.Item('Camera Frame X')
+if not cameraFrameX.Valid():
+    cameraFrameX = RDK.AddFrame('Camera Frame X')
+    cameraFrameX.setPose(Fanuc_2_Pose([1350, 550, 100, 0, -180, -90]))
 
 # Use one of this frames:
 camera_frames = cameraFrameX
