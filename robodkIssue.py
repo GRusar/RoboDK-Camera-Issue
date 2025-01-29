@@ -21,14 +21,14 @@ if not cameraFrame.Valid():
     cameraFrame = RDK.AddFrame('Camera Frame')
     cameraFrame.setPose(Fanuc_2_Pose([1500, 0, 100, 0, -180, -90]))
 
-cameraFrameX = RDK.Item('Camera Frame X')
-if not cameraFrameX.Valid():
-    cameraFrameX = RDK.AddFrame('Camera Frame X')
-    cameraFrameX.setPose(Fanuc_2_Pose([1350, 550, 100, 0, -180, -90]))
+# cameraFrameX = RDK.Item('Camera Frame X')
+# if not cameraFrameX.Valid():
+#     cameraFrameX = RDK.AddFrame('Camera Frame X')
+#     cameraFrameX.setPose(Fanuc_2_Pose([1350, 550, 100, 0, -180, -90]))
 
 # Use one of this frames:
-camera_frames = cameraFrameX
-# camera_frames = cameraFrame
+# camera_frames = cameraFrameX
+camera_frames = cameraFrame
 
 SHOT = True
 VISUALISE_MESH = True
